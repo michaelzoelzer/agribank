@@ -74,7 +74,7 @@ if st.button("Check Suitability"):
 
         features = np.array([[lat, lon, soil_ph, temp, rain]])
         prediction = model.predict(features)[0]
-        prob = model.predict_proba(features)[0][0,5]
+        prob = model.predict_proba(features)[0][0]
 
         st.success(f"Suitability Score: {prob:.2%} ({'Suitable' if prediction else 'Not Suitable'} for Asparagus)")
         st.markdown("### Environmental Conditions")
