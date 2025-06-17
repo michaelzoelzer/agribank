@@ -76,7 +76,7 @@ if st.button("Check Suitability"):
         prediction = model.predict(features)[0]
         prob = model.predict_proba(features)[0][0]
 
-        st.success(f"Suitability Score: {prob:.2%} ({'Suitable' if prediction else 'Not Suitable'} for Asparagus)")
+        st.success(f"Suitability Score: {prob:.2%} ({'Suitable' if prediction else 'Suitable'} for Asparagus)")
         st.markdown("### Environmental Conditions")
         st.write(f"- Estimated Soil pH: {soil_ph:.2f}")
         st.write(f"- Average Temperature: {temp:.2f} °C")
