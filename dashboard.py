@@ -1,6 +1,6 @@
 import streamlit as st
 import requests
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 from geopy.geocoders import Nominatim
