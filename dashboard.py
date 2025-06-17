@@ -89,13 +89,24 @@ def simulate_yield_curve(base_yield):
 
 # ------------------ Streamlit App ------------------
 st.title("🌱 Asparagus Yield Prediction App")
-loc = st.text_input("Enter location (address or city):")
+#loc = st.text_input("Enter location (address or city):")
+#if st.button("Estimate"):
+#    geo = Nominatim(user_agent="asparagus_app").geocode(loc)
+#    if not geo:
+#        st.error("Location not found")
+#        st.stop()
+#    lat, lon = geo.latitude, geo.longitude
+st.subheader("📍 Set Your Location")
+col1, col2 = st.columns(2)
+with col1:
+    lat = st.number_input("Latitude", value=51.0, format="%.6f")
+with col2:
+    lon = st.number_input("Longitude", value=0.0, format="%.6f")
+
 if st.button("Estimate"):
-    geo = Nominatim(user_agent="asparagus_app").geocode(loc)
-    if not geo:
-        st.error("Location not found")
+    if lat == 0.0 and lon == 0.0:
+        st.warning("Please provide valid coordinates.")
         st.stop()
-    lat, lon = geo.latitude, geo.longitude
     st.map(pd.DataFrame({'lat': [lat], 'lon': [lon]}))
 
     with st.spinner("Fetching environmental data..."):
