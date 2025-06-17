@@ -26,13 +26,13 @@ IDEAL = {
 def get_soil(lat, lon):
     url = (
         f"https://rest.isric.org/soilgrids/v2.0/properties/query?lat={lat}&lon={lon}"
-        "&property=ph&property=sand&property=clay&depth=0-30cm&value=mean"
+        "&property=phh2o&property=sand&property=clay&depth=0-30cm&value=mean"
     )
     r = requests.get(url)
     r.raise_for_status()
     d = r.json()["properties"]
     return {
-        "ph": d["ph"]["mean"],
+        "ph": d["phh2o"]["mean"],
         "sand": d["sand"]["mean"],
         "clay": d["clay"]["mean"],
     }
