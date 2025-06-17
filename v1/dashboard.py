@@ -4,11 +4,19 @@ import requests
 import numpy as np
 import pickle
 
-# Load pre-trained models
-with open('rf_model.pkl', 'rb') as f:
-    rf_model = pickle.load(f)
-with open('xgb_model.pkl', 'rb') as f:
-    xgb_model = pickle.load(f)
+# Load pre-trained models (replace with your actual model paths)
+# with open('rf_model.pkl', 'rb') as f:
+#     rf_model = pickle.load(f)
+# with open('xgb_model.pkl', 'rb') as f:
+#     xgb_model = pickle.load(f)
+
+# Simulated model for example
+class DummyModel:
+    def predict(self, X):
+        return [112000 - (X[0][0] * 5) + (X[0][1] * 5000)]
+
+rf_model = DummyModel()
+xgb_model = DummyModel()
 
 st.title("Asparagus Yield Forecast Dashboard")
 st.subheader("Location: Bruchsal, Germany")
