@@ -3,3 +3,4 @@ requests
 numpy
 scikit-learn
 xgboost
+geopy
