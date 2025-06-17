@@ -64,8 +64,8 @@ def train_model():
 st.title("Asparagus Suitability Checker")
 st.markdown("Check if a location is suitable for growing asparagus based on GPS coordinates.")
 
-lat = st.number_input("Enter Latitude (-90 to 90)", min_value=-90.0, max_value=90.0, value=40.0)
-lon = st.number_input("Enter Longitude (-180 to 180)", min_value=-180.0, max_value=180.0, value=-75.0)
+lat = st.number_input("Enter Latitude (-90 to 90)", min_value=-90.0, max_value=90.0, value=49.1)
+lon = st.number_input("Enter Longitude (-180 to 180)", min_value=-180.0, max_value=180.0, value=8.6)
 
 if st.button("Check Suitability"):
     with st.spinner("Analyzing environmental conditions and checking suitability..."):
