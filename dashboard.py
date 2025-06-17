@@ -23,19 +23,19 @@ IDEAL = {
 }
 
 # ------------------ Fetch Soil Data ------------------
-def get_soil(lat, lon):
-    url = (
-        f"https://rest.isric.org/soilgrids/v2.0/properties/query?lat={lat}&lon={lon}"
-        "&property=sand&property=clay&depth=0-30cm&value=mean"
-    )
-    r = requests.get(url)
-    r.raise_for_status()
-    d = r.json()["properties"]
-    return {
+#def get_soil(lat, lon):
+#    url = (
+#        f"https://rest.isric.org/soilgrids/v2.0/properties/query?lat={lat}&lon={lon}"
+#        "&property=phh2o&property=sand&property=clay&depth=0-30cm&value=mean"
+#    )
+#    r = requests.get(url)
+#    r.raise_for_status()
+#    d = r.json()["properties"]
+#    return {
 #        "ph": d["phh2o"]["mean"],
-        "sand": d["sand"]["mean"],
-        "clay": d["clay"]["mean"],
-    }
+#        "sand": d["sand"]["mean"],
+#        "clay": d["clay"]["mean"],
+#    }
 
 # ------------------ Fetch Weather Data ------------------
 def get_weather(lat, lon):
