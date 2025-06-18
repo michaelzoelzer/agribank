@@ -87,10 +87,9 @@ if st.sidebar.button("Assess Risk"):
     st.markdown("- Yield index is the most critical factor influencing risk.")
 
     st.markdown("---")
-    st.subheader("Climate and Market Stress Testing")
+    st.subheader("Climate Stress Testing")
+    st.markdown("Stress testing loan risk under different rainfall scenarios.")
 
-    # Rainfall Stress Test
-    st.markdown("#### Rainfall Stress Test")
     stress_rainfalls = np.linspace(200, 800, 20)
     stress_results = []
     for rf in stress_rainfalls:
@@ -100,35 +99,7 @@ if st.sidebar.button("Assess Risk"):
         ]])
         prob = model.predict_proba(test_features)[0][1]
         stress_results.append((rf, prob))
+
     stress_df = pd.DataFrame(stress_results, columns=["Rainfall", "Risk Probability"])
     st.line_chart(stress_df.set_index("Rainfall"))
-
-    # Yield Index Stress Test
-    st.markdown("#### Yield Index Stress Test")
-    stress_yields = np.linspace(0.4, 1.0, 20)
-    yield_results = []
-    for yld in stress_yields:
-        test_features = np.array([[
-            yld, rainfall, soil_ph, price_volatility,
-            loan_amount, land_size, past_defaults
-        ]])
-        prob = model.predict_proba(test_features)[0][1]
-        yield_results.append((yld, prob))
-    yield_df = pd.DataFrame(yield_results, columns=["Yield Index", "Risk Probability"])
-    st.line_chart(yield_df.set_index("Yield Index"))
-
-    # Market Volatility Stress Test
-    st.markdown("#### Market Volatility Stress Test")
-    stress_volatility = np.linspace(0.0, 1.0, 20)
-    vol_results = []
-    for vol in stress_volatility:
-        test_features = np.array([[
-            yield_index, rainfall, soil_ph, vol,
-            loan_amount, land_size, past_defaults
-        ]])
-        prob = model.predict_proba(test_features)[0][1]
-        vol_results.append((vol, prob))
-    vol_df = pd.DataFrame(vol_results, columns=["Market Volatility", "Risk Probability"])
-    st.line_chart(vol_df.set_index("Market Volatility"))
-
-    st.write("These graphs show how varying key parameters affect loan risk.")
+    st.write("This graph shows how varying rainfall affects loan risk.")
