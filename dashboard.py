@@ -146,4 +146,12 @@ if st.sidebar.button("Assess Risk"):
     combined_df = pd.DataFrame(combined_results, columns=["Rainfall", "Yield Index", "Volatility", "Risk Probability"])
     pivot_table = combined_df.pivot_table(index="Yield Index", columns="Rainfall", values="Risk Probability")
     st.dataframe(pivot_table.style.format("{:.2%}"))
-    st.write("This table shows the combined effect of rainfall, yield, and market volatility on loan risk.")
+
+    # Heatmap visualization
+    st.markdown("#### Heatmap of Risk Probabilities")
+    fig, ax = plt.subplots()
+    sns.heatmap(pivot_table, annot=True, fmt=".2f", cmap="YlOrRd", ax=ax)
+    ax.set_title("Loan Risk Probability by Yield Index and Rainfall")
+    st.pyplot(fig)
+
+    st.write("This heatmap visualizes the combined effect of rainfall and yield on loan risk.")
