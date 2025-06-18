@@ -131,19 +131,4 @@ if st.sidebar.button("Assess Risk"):
     vol_df = pd.DataFrame(vol_results, columns=["Market Volatility", "Risk Probability"])
     st.line_chart(vol_df.set_index("Market Volatility"))
 
-    # Combined Multi-Factor Stress Test
-    st.markdown("#### Combined Multi-Factor Stress Test")
-    combined_results = []
-    for rf in np.linspace(300, 700, 5):
-        for yld in np.linspace(0.5, 0.9, 5):
-            for vol in np.linspace(0.1, 0.5, 5):
-                test_features = np.array([[
-                    yld, rf, soil_ph, vol,
-                    loan_amount, land_size, past_defaults
-                ]])
-                prob = model.predict_proba(test_features)[0][1]
-                combined_results.append((rf, yld, vol, prob))
-    combined_df = pd.DataFrame(combined_results, columns=["Rainfall", "Yield Index", "Volatility", "Risk Probability"])
-    pivot_table = combined_df.pivot_table(index="Yield Index", columns="Rainfall", values="Risk Probability")
-    st.dataframe(pivot_table.style.format("{:.2%}"))
-    st.write("This table shows the combined effect of rainfall, yield, and market volatility on loan risk.")
+    st.write("These graphs show how varying key parameters affect loan risk.")
