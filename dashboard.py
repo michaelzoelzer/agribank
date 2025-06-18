@@ -155,3 +155,25 @@ if st.sidebar.button("Assess Risk"):
     st.pyplot(fig)
 
     st.write("This heatmap visualizes the combined effect of rainfall and yield on loan risk.")
+
+    # Future Climate Scenario Simulation with custom inputs
+    st.markdown("#### Future Climate Scenario Projection")
+    st.write("Simulated projection based on user-defined future climate change parameters.")
+    end_year = st.slider("Projection Horizon (years from now)", 10, 50, 30)
+    rainfall_drop = st.slider("Total Rainfall Drop over Time (mm)", 0, 200, 100)
+    volatility_rise = st.slider("Total Market Volatility Increase", 0.0, 0.5, 0.2, 0.01)
+
+    years = list(range(2025, 2025 + end_year + 1))
+    future_rainfall = np.linspace(rainfall, rainfall - rainfall_drop, len(years))
+    future_volatility = np.linspace(price_volatility, price_volatility + volatility_rise, len(years))
+    future_risk = []
+    for i in range(len(years)):
+        features_future = np.array([[
+            yield_index, future_rainfall[i], soil_ph, future_volatility[i],
+            loan_amount, land_size, past_defaults
+        ]])
+        risk_prob = model.predict_proba(features_future)[0][1]
+        future_risk.append((years[i], risk_prob))
+    future_df = pd.DataFrame(future_risk, columns=["Year", "Risk Probability"])
+    st.line_chart(future_df.set_index("Year"))
+    st.write("Projected increase in loan risk over time under custom climate scenario.")
