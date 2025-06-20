@@ -61,12 +61,12 @@ st.markdown("Assess the risk level for crop-linked agricultural loans.")
 model, accuracy, feature_names = train_risk_model()
 
 st.sidebar.header("Enter Farm & Loan Details")
+loan_amount = st.sidebar.number_input("Loan Amount (€)", 5000, 500000, 25000, 1000)
+land_size = st.sidebar.number_input("Land Size (hectares)", 5.0, 100.0, 10.0, 0.5)
 yield_index = st.sidebar.slider("Expected Yield Index (0-1)", 0.0, 1.0, 0.75, 0.01)
 rainfall = st.sidebar.slider("Annual Rainfall (mm)", 300, 800, 500)
 soil_ph = st.sidebar.slider("Soil pH", 5.0, 8.0, 6.5)
 price_volatility = st.sidebar.slider("Market Price Volatility", 0.0, 1.0, 0.2, 0.01)
-loan_amount = st.sidebar.number_input("Loan Amount ($)", 1000, 500000, 25000)
-land_size = st.sidebar.number_input("Land Size (hectares)", 0.5, 100.0, 10.0)
 past_defaults = st.sidebar.slider("Past Defaults (count)", 0, 10, 0)
 
 if st.sidebar.button("Assess Risk"):
@@ -82,7 +82,7 @@ if st.sidebar.button("Assess Risk"):
     st.write(f"**Risk Classification:** {'High Risk' if prediction else 'Low Risk'}")
     st.write(f"**Model Accuracy:** {accuracy:.2%}")
 
-    st.markdown("### Explanation")
+    st.markdown("### Annotations")
     st.markdown("- High risk suggests loan may need additional safeguards.")
     st.markdown("- Yield index is the most critical factor influencing risk.")
 
