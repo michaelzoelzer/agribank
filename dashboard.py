@@ -60,7 +60,8 @@ st.markdown("Assess the risk level for crop-linked agricultural loans.")
 
 model, accuracy, feature_names = train_risk_model()
 
-st.sidebar.header("Enter Farm & Loan Details")
+st.sidebar.header("Enter Details")
+st.sidebar.markdown("(Loan, Farm, Crop)")
 loan_amount = st.sidebar.number_input("Loan Amount (€)", 5000, 500000, 25000, 1000)
 land_size = st.sidebar.number_input("Land Size (hectares)", 5.0, 100.0, 10.0, 0.5)
 yield_index = st.sidebar.slider("Expected Yield Index (0-1)", 0.0, 1.0, 0.75, 0.01)
