@@ -70,13 +70,14 @@ st.title("Crop-Linked Loan Risk Predictor (XGBoost Enhanced)")
 
 model, accuracy, auc_score, feature_names, X_train = train_xgboost_model()
 
-st.sidebar.header("Enter Farm & Loan Details")
+st.sidebar.header("Enter Details")
+st.sidebar.markdown("(Loan, Farm, Crop)")
+loan_amount = st.sidebar.number_input("Loan Amount (€)", 10000, 500000, 25000, 1000)
+land_size = st.sidebar.number_input("Land Size (hectares)", 5.0, 100.0, 10.0, 0.5)
 yield_index = st.sidebar.slider("Expected Yield Index (0-1)", 0.0, 1.0, 0.75, 0.01)
 rainfall = st.sidebar.slider("Annual Rainfall (mm)", 300, 800, 500)
 soil_ph = st.sidebar.slider("Soil pH", 5.0, 8.0, 6.5)
 price_volatility = st.sidebar.slider("Market Price Volatility", 0.0, 1.0, 0.2, 0.01)
-loan_amount = st.sidebar.number_input("Loan Amount ($)", 500, 10000, 2500)
-land_size = st.sidebar.number_input("Land Size (hectares)", 0.5, 20.0, 5.0)
 past_defaults = st.sidebar.slider("Past Defaults (count)", 0, 10, 0)
 
 if st.sidebar.button("Assess Risk"):
@@ -88,12 +89,17 @@ if st.sidebar.button("Assess Risk"):
     prediction = model.predict(input_data)[0]
     prob = model.predict_proba(input_data)[0][1]
 
-    st.subheader("Loan Risk Assessment")
+    st.subheader("Default Risk Assessment")
     st.write(f"**Risk Probability:** {prob:.2%}")
     st.write(f"**Risk Classification:** {'High Risk' if prediction else 'Low Risk'}")
     st.write(f"**Model Accuracy:** {accuracy:.2%}")
     st.write(f"**AUC Score:** {auc_score:.2f}")
 
+    st.markdown("### Annotations")
+    st.markdown("- High risk suggests loan may need additional safeguards.")
+    st.markdown("- Yield index is the most critical factor influencing risk.")
+
+    st.markdown("---")
     st.markdown("### Feature Importance")
     fig, ax = plt.subplots()
     xgb.plot_importance(model, ax=ax)
@@ -102,10 +108,98 @@ if st.sidebar.button("Assess Risk"):
     st.markdown("### SHAP Explanation")
     explainer = shap.Explainer(model, X_train)
     shap_values = explainer(input_data)
-#    st.set_option('deprecation.showPyplotGlobalUse', False)
-    shap.plots.waterfall(shap_values[0], max_display=10)
     fig, ax = plt.subplots()
-    ax.scatter([1, 2, 3], [1, 2, 3])
-    # other plotting actions...
+    shap.plots.waterfall(shap_values[0], max_display=10)
     st.pyplot(fig)
-#    st.pyplot(bbox_inches='tight')
+
+    st.markdown("---")
+    st.subheader("Climate and Market Stress Testing")
+
+    # Rainfall Stress Test
+    st.markdown("#### Rainfall Stress Test")
+    stress_rainfalls = np.linspace(200, 800, 20)
+    stress_results = []
+    for rf in stress_rainfalls:
+        test_features = np.array([[
+            yield_index, rf, soil_ph, price_volatility,
+            loan_amount, land_size, past_defaults
+        ]])
+        prob = model.predict_proba(test_features)[0][1]
+        stress_results.append((rf, prob))
+    stress_df = pd.DataFrame(stress_results, columns=["Rainfall", "Risk Probability"])
+    st.line_chart(stress_df.set_index("Rainfall"))
+
+    # Yield Index Stress Test
+    st.markdown("#### Yield Index Stress Test")
+    stress_yields = np.linspace(0.4, 1.0, 20)
+    yield_results = []
+    for yld in stress_yields:
+        test_features = np.array([[
+            yld, rainfall, soil_ph, price_volatility,
+            loan_amount, land_size, past_defaults
+        ]])
+        prob = model.predict_proba(test_features)[0][1]
+        yield_results.append((yld, prob))
+    yield_df = pd.DataFrame(yield_results, columns=["Yield Index", "Risk Probability"])
+    st.line_chart(yield_df.set_index("Yield Index"))
+
+    # Market Volatility Stress Test
+    st.markdown("#### Market Volatility Stress Test")
+    stress_volatility = np.linspace(0.0, 1.0, 20)
+    vol_results = []
+    for vol in stress_volatility:
+        test_features = np.array([[
+            yield_index, rainfall, soil_ph, vol,
+            loan_amount, land_size, past_defaults
+        ]])
+        prob = model.predict_proba(test_features)[0][1]
+        vol_results.append((vol, prob))
+    vol_df = pd.DataFrame(vol_results, columns=["Market Volatility", "Risk Probability"])
+    st.line_chart(vol_df.set_index("Market Volatility"))
+
+    # Combined Multi-Factor Stress Test
+    st.markdown("#### Combined Multi-Factor Stress Test")
+    combined_results = []
+    for rf in np.linspace(300, 700, 5):
+        for yld in np.linspace(0.5, 0.9, 5):
+            for vol in np.linspace(0.1, 0.5, 5):
+                test_features = np.array([[
+                    yld, rf, soil_ph, vol,
+                    loan_amount, land_size, past_defaults
+                ]])
+                prob = model.predict_proba(test_features)[0][1]
+                combined_results.append((rf, yld, vol, prob))
+    combined_df = pd.DataFrame(combined_results, columns=["Rainfall", "Yield Index", "Volatility", "Risk Probability"])
+    pivot_table = combined_df.pivot_table(index="Yield Index", columns="Rainfall", values="Risk Probability")
+    st.dataframe(pivot_table.style.format("{:.2%}"))
+
+    # Heatmap visualization
+    st.markdown("#### Heatmap of Risk Probabilities")
+    fig, ax = plt.subplots()
+    sns.heatmap(pivot_table, annot=True, fmt=".2f", cmap="YlOrRd", ax=ax)
+    ax.set_title("Loan Risk Probability by Yield Index and Rainfall")
+    st.pyplot(fig)
+
+    st.write("This heatmap visualizes the combined effect of rainfall and yield on loan risk.")
+
+    # Future Climate Scenario Simulation with custom inputs
+    st.markdown("#### Future Climate Scenario Projection")
+    st.write("Simulated projection based on user-defined future climate change parameters.")
+    end_year = st.slider("Projection Horizon (years from now)", 10, 50, 30)
+    rainfall_drop = st.slider("Total Rainfall Drop over Time (mm)", 0, 200, 100)
+    volatility_rise = st.slider("Total Market Volatility Increase", 0.0, 0.5, 0.2, 0.01)
+
+    years = list(range(2025, 2025 + end_year + 1))
+    future_rainfall = np.linspace(rainfall, rainfall - rainfall_drop, len(years))
+    future_volatility = np.linspace(price_volatility, price_volatility + volatility_rise, len(years))
+    future_risk = []
+    for i in range(len(years)):
+        features_future = np.array([[
+            yield_index, future_rainfall[i], soil_ph, future_volatility[i],
+            loan_amount, land_size, past_defaults
+        ]])
+        risk_prob = model.predict_proba(features_future)[0][1]
+        future_risk.append((years[i], risk_prob))
+    future_df = pd.DataFrame(future_risk, columns=["Year", "Risk Probability"])
+    st.line_chart(future_df.set_index("Year"))
+    st.write("Projected increase in loan risk over time under custom climate scenario.")
