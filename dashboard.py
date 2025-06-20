@@ -102,6 +102,6 @@ if st.sidebar.button("Assess Risk"):
     st.markdown("### SHAP Explanation")
     explainer = shap.Explainer(model, X_train)
     shap_values = explainer(input_data)
-    st.set_option('deprecation.showPyplotGlobalUse', False)
+#    st.set_option('deprecation.showPyplotGlobalUse', False)
     shap.plots.waterfall(shap_values[0], max_display=10)
     st.pyplot(bbox_inches='tight')
