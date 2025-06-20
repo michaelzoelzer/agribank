@@ -68,6 +68,7 @@ def train_xgboost_model():
 # Streamlit App
 st.title("Crop-Linked Loan Risk Predictor (XGBoost Enhanced)")
 st.markdown("Assess the risk level for crop-linked agricultural loans.")
+st.markdown("Tap on the arrows (>>) top left to enter details.")
 
 model, accuracy, auc_score, feature_names, X_train = train_xgboost_model()
 
