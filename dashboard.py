@@ -104,4 +104,8 @@ if st.sidebar.button("Assess Risk"):
     shap_values = explainer(input_data)
 #    st.set_option('deprecation.showPyplotGlobalUse', False)
     shap.plots.waterfall(shap_values[0], max_display=10)
-    st.pyplot(bbox_inches='tight')
+    fig, ax = plt.subplots()
+    ax.scatter([1, 2, 3], [1, 2, 3])
+    # other plotting actions...
+    st.pyplot(fig)
+#    st.pyplot(bbox_inches='tight')
