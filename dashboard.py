@@ -65,8 +65,8 @@ yield_index = st.sidebar.slider("Expected Yield Index (0-1)", 0.0, 1.0, 0.75, 0.
 rainfall = st.sidebar.slider("Annual Rainfall (mm)", 300, 800, 500)
 soil_ph = st.sidebar.slider("Soil pH", 5.0, 8.0, 6.5)
 price_volatility = st.sidebar.slider("Market Price Volatility", 0.0, 1.0, 0.2, 0.01)
-loan_amount = st.sidebar.number_input("Loan Amount ($)", 500, 10000, 2500)
-land_size = st.sidebar.number_input("Land Size (hectares)", 0.5, 20.0, 5.0)
+loan_amount = st.sidebar.number_input("Loan Amount ($)", 1000, 500000, 25000)
+land_size = st.sidebar.number_input("Land Size (hectares)", 0.5, 100.0, 10.0)
 past_defaults = st.sidebar.slider("Past Defaults (count)", 0, 10, 0)
 
 if st.sidebar.button("Assess Risk"):
